@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>QR Attendance</title>
+  <script src="https://unpkg.com/html5-qrcode"></script>
+</head>
+<body>
+  <h2>Scan QR Code for Attendance</h2>
+  <div id="reader" style="width: 300px;"></div>
+  <p id="result"></p>
+
+  <script>
+    function onScanSuccess(decodedText, decodedResult) {
+      document.getElementById("result").innerText = `Scanned: ${decodedText}`;
+      sendToServer(decodedText); // Send the result to your server or database
+      html5QrcodeScanner.clear();
+    }
+
+    const html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader", { fps: 10, qrbox: 250 });
+    html5QrcodeScanner.render(onScanSuccess);
+
+    function sendToServer(data) {
+      fetch("https://your-backend.com/attendance", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: data,
+          timestamp: new Date().toISOString()
+        })
+      });
+    }
+  </script>
+</body>
+</html>
